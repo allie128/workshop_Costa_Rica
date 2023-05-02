@@ -1,0 +1,92 @@
+﻿Sample_ID,Species,Genus,Family,Order,Type,State,Lat,Lon,GPL_lineage,Collection_year
+DB_F_106,Craugastor sp.,Craugastor,Craugastoridae,Anura,Swab,Chiapas,19.383556,-97.002889,1,2016
+DB_F_107,Craugastor sp.,Craugastor,Craugastoridae,Anura,Swab,Chiapas,15.061333,-92.127222,2,2016
+DB_F_109,Incilius sp.,Incilius,Bufonidae,Anura,Swab,Chiapas,16.910889,-93.611556,1,2016
+DB_F_116,Bolitoglossa occidentalis,Bolitoglossa,Plethodontidae,Urodela,Swab,Chiapas,15.714278,-92.948,1,2016
+DB_F_117,Bolitoglossa occidentalis,Bolitoglossa,Plethodontidae,Urodela,Swab,Chiapas,15.714278,-92.948,1,2016
+DB_F_118,Craugastor matudai,Craugastor,Craugastoridae,Anura,Swab,Chiapas,15.714278,-92.948,1,2016
+DB_F_120,Craugastor matudai,Craugastor,Craugastoridae,Anura,Swab,Chiapas,15.657028,-92.815889,1,2016
+DB_F_131,Agalychnis moreletii,Agalychnis,Hylidae,Anura,Swab,Chiapas,15.323917,-92.481861,1,2018
+DB_F_135,Agalychnis callydrias,Agalychnis,Hylidae,Anura,Swab,Chiapas,16.880113,-93.45692,1,2018
+DB_F_149,Agalychnis moreletii,Agalychnis,Hylidae,Anura,Swab,Chiapas,16.880113,-93.45692,1,2018
+DB_F_153,Agalychnis moreletii,Agalychnis,Hylidae,Anura,Swab,Chiapas,17.694133,-92.168114,1,2018
+DB_F_157,Agalychnis callydrias,Agalychnis,Hylidae,Anura,Swab,Chiapas,17.694133,-92.168114,1,2018
+DB_F_165,Agalychnis moreletii,Agalychnis,Hylidae,Anura,Swab,Chiapas,15.339704,-92.512779,1,2018
+DB_F_215,Bolitoglossa platydactyla,Bolitoglossa,Plethodontidae,Urodela,Swab,Veracruz,18.882694,-96.931681,1,2017
+DB_F_216,Lithobates sp.,Lithobates,Ranidae,Anura,Swab,Querétaro,21.27257,-99.15775,1,2018
+DB_F_218,Lithobates sp.,Lithobates,Ranidae,Anura,Swab,Chiapas,16.556083,-96.027278,1,2016
+DB_F_220,Lithobates sp.,Lithobates,Ranidae,Anura,Swab,San Luis Potosí,22.48715,-99.47374,1,2018
+DB_I_1,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72545,-114.71519,1,2018
+DB_I_100,Lithobates berlandieri,Lithobates,Ranidae,Anura,Isolate,Hidalgo,21.07361111,-99.14166667,1,2018
+DB_I_101,Plectrohyla sagorum,Plectrohyla,Hylidae,Anura,Isolate,Chiapas,15.085627,-92.08511,2,2018
+DB_I_103,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Guanajuato,20.97199,-101.26006,1,2018
+DB_I_104,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Guanajuato,20.97199,-101.26006,1,2018
+DB_I_11,Anaxyrus boreas,Anaxyrus,Bufonidae,Anura,Isolate,Baja California,31.86111,-116.59977,2,2018
+DB_I_12,Anaxyrus boreas,Anaxyrus,Bufonidae,Anura,Isolate,Baja California,31.86111,-116.59977,2,2018
+DB_I_13,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,30.89392,-115.48181,1,2018
+DB_I_18,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,28.61227,-114.05106,1,2018
+DB_I_19,Leptodactylus melanonotus,Leptodactylus,Leptodactylidae,Anura,Isolate,Guerrero,17.2908,-100.27963,1,2018
+DB_I_2,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72545,-114.71519,1,2018
+DB_I_20,Leptodactylus melanonotus,Leptodactylus,Leptodactylidae,Anura,Isolate,Guerrero,17.2908,-100.27963,1,2018
+DB_I_21,Lithobates sierramadrensis,Lithobates,Ranidae,Anura,Isolate,Guerrero,17.25306,-100.31544,1,2018
+DB_I_23,Scinax staufferi,Scinax,Hylidae,Anura,Isolate,Veracruz,18.873639,-97.016778,1,2017
+DB_I_25,Anotheca spinosa,Anotheca,Hylidae,Anura,Isolate,Veracruz,18.86475,-97.004611,1,2017
+DB_I_26,Lithobates montezumae,Lithobates,Ranidae,Anura,Isolate,Mexico City,19.318231,-99.194274,1,2017
+DB_I_28,Lithobates montezumae,Lithobates,Ranidae,Anura,Isolate,Mexico City,19.318231,-99.194274,1,2017
+DB_I_29,Lithobates montezumae,Lithobates,Ranidae,Anura,Isolate,Estado de México,19.490114,-99.845606,1,2017
+DB_I_31,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.649917,-101.222854,1,2017
+DB_I_34,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.649917,-101.222854,1,2017
+DB_I_36,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.649917,-101.222854,1,2017
+DB_I_40,Scinax staufferi,Scinax,Hylidae,Anura,Isolate,Veracruz,18.873639,-97.016778,1,2017
+DB_I_41,Scinax staufferi,Scinax,Hylidae,Anura,Isolate,Veracruz,18.873639,-97.016778,1,2017
+DB_I_43,Lithobates berlandieri,Lithobates,Ranidae,Anura,Isolate,Veracruz,18.873639,-97.016778,1,2018
+DB_I_45,Craugastor rhodopis,Craugastor,Craugastoridae,Anura,Isolate,Veracruz,19.643389,-97.1775,1,2017
+DB_I_46,Craugastor rhodopis,Craugastor,Craugastoridae,Anura,Isolate,Veracruz,19.442083,-97.040972,1,2017
+DB_I_47,Ptychohyla zophodes,Ptychohyla,Hylidae,Anura,Isolate,Oaxaca,17.73092,-96.56062,1,2018
+DB_I_48,Ptycohyla sp.,Ptychohyla,Hylidae,Anura,Isolate,Oaxaca,16.896889,-95.762972,1,2018
+DB_I_50,Ptycohyla sp.,Ptychohyla,Hylidae,Anura,Isolate,Oaxaca,16.896889,-95.762972,1,2018
+DB_I_51,Anaxyrus boreas,Anaxyrus,Bufonidae,Anura,Isolate,Baja California,31.01443,-115.50019,1,2018
+DB_I_52,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,30.90157,-115.48296,1,2018
+DB_I_53,Rana draytonii,Rana,Ranidae,Anura,Isolate,Baja California,30.89392,-115.48181,1,2018
+DB_I_54,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72545,-114.71519,1,2018
+DB_I_57,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72545,-114.71519,1,2018
+DB_I_58,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72545,-114.71519,1,2018
+DB_I_6,Hyliola cadaverina,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72652,-114.71307,1,2018
+DB_I_60,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72545,-114.71519,1,2018
+DB_I_61,Hyliola cadaverina,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72652,-114.71307,1,2018
+DB_I_62,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,28.61227,-114.05106,1,2018
+DB_I_63,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,28.61227,-114.05106,1,2018
+DB_I_64,Lithobates montezumae,Lithobates,Ranidae,Anura,Isolate,Mexico City,19.318231,-99.194274,1,2017
+DB_I_65,Lithobates montezumae,Lithobates,Ranidae,Anura,Isolate,Mexico City,19.318231,-99.194274,1,2017
+DB_I_67,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.649917,-101.222854,1,2017
+DB_I_68,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.649917,-101.222854,1,2017
+DB_I_7,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,31.0671,-115.50526,1,2018
+DB_I_70,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.649917,-101.222854,1,2017
+DB_I_71,Scinax staufferi,Scinax,Hylidae,Anura,Isolate,Veracruz,18.873639,-97.016778,1,2017
+DB_I_72,Scinax staufferi,Scinax,Hylidae,Anura,Isolate,Veracruz,18.873639,-97.016778,1,2017
+DB_I_73,Craugastor rhodopis,Craugastor,Craugastoridae,Anura,Isolate,Veracruz,19.442083,-97.040972,1,2017
+DB_I_74,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,30.90157,-115.48296,1,2018
+DB_I_75,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,30.89392,-115.48181,1,2018
+DB_I_76,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,28.61227,-114.05106,1,2018
+DB_I_77,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,28.61227,-114.05106,1,2018
+DB_I_78,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72545,-114.71519,1,2018
+DB_I_8,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,31.0671,-115.50526,1,2018
+DB_I_80,Hyliola cadaverina,Hyliola,Hylidae,Anura,Isolate,Baja California,29.72652,-114.71307,1,2018
+DB_I_81,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,31.894624,-116.68947,1,2018
+DB_I_83,Craugastor pygmaeus,Craugastor,Craugastoridae,Anura,Isolate,Oaxaca,15.96235,-96.569606,1,2017
+DB_I_84,Lithobates catesbeiana,Lithobates,Ranidae,Anura,Isolate,Veracruz,21.17545,-97.8476,1,2018
+DB_I_85,Leptodactylus melanonotus,Leptodactylus,Leptodactylidae,Anura,Isolate,Colima,19.46363,-103.71013,1,2018
+DB_I_86,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Colima,19.46363,-103.71013,1,2018
+DB_I_87,Lithobates sp.,Lithobates,Ranidae,Anura,Isolate,Colima,19.46363,-103.71013,1,2018
+DB_I_88,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.68175,-100.22956,1,2017
+DB_I_89,Ambystoma rivulare,Ambystoma,Ambystomatidae,Urodela,Isolate,Michoacán,19.6088,-100.244465,1,2018
+DB_I_9,Hyliola regilla,Hyliola,Hylidae,Anura,Isolate,Baja California,31.894624,-116.68947,1,2018
+DB_I_90,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Michoacán,19.6088,-100.244465,1,2017
+DB_I_93,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Guanajuato,20.97199,-101.26006,1,2018
+DB_I_94,Lithobates neovolcanicus,Lithobates,Ranidae,Anura,Isolate,Guanajuato,20.97199,-101.26006,1,2018
+DB_I_95,Hyla arenicolor,Hyla,Hylidae,Anura,Isolate,Guanajuato,20.97199,-101.26006,1,2018
+DB_I_96,Hyla arenicolor,Hyla,Hylidae,Anura,Isolate,Guanajuato,20.97199,-101.26006,1,2018
+DB_I_98,Pseudoeurycea leprosa,Pseudoeurycea,Plethodontidae,Urodela,Isolate,Tlaxcala,19.246353,-97.994952,1,2016
+DB_I_99,Lithobates berlandieri,Lithobates,Ranidae,Anura,Isolate,Hidalgo,21.07361111,-99.14166667,1,2018
+DB_M_266,Pseudoeurycea nigromaculata,Pseudoeurycea,Plethodontidae,Urodela,Museum swab,Veracruz,18.8425,-97.01305556,1,1981
+DB_M_284,Pseudoeurycea rex,Pseudoeurycea,Plethodontidae,Urodela,Museum swab,Chiapas,15.52621,-92.34196,1,1975

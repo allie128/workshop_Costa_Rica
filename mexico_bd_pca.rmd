@@ -1,0 +1,473 @@
+---
+title: "Analyzing Bd genotype data in R"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+Before running this script I first did a few steps call SNPS from our data. I aligned the raw sequencing reads to a set of reference alleles using the program bwa-mem, then called variants using the haplotype-based caller Freebayes. Variants were then filtered using to only include variants with a minor allele frequency > 0.01, quality > 30, less than 10% missing data, and minimum depth of 5. There are plenty of tutorials out there to get from raw reads to filtered variants. But for the sake of time let's just start with out filtered variants in the form of a .vcf file.
+
+Let's start with installing and loading the packages we will need.
+
+```{r setup, include=FALSE}
+
+if (!require(knitr)){
+  install.packages("knitr")
+  library(knitr)
+}
+
+if (!require(devtools)){
+  install.packages("devtools")
+  library(devtools)
+}
+
+if (!require(tidyverse)){
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+
+if (!require(vcfR)){
+  install.packages("vcfR")
+  library(vcfR)
+}
+
+if (!require(ggplot2)){
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if (!require(adegenet)){
+  install.packages("adegenet")
+  library(adegenet)
+}
+
+if (!require(poppr)){
+  install.packages("poppr")
+  library(poppr)
+}
+
+if (!require(RColorBrewer)){
+  install.packages("RColorBrewer")
+  library(RColorBrewer)
+}
+
+if (!require(vegan)){
+  install.packages("vegan")
+  library(vegan)
+}
+
+if (!require(Imap)){
+  install.packages("Imap")
+  library(Imap)
+}
+
+if (!require(ggsignif)){
+  install.packages("ggsignif")
+  library(ggsignif)
+}
+
+if (!require(rnaturalearth)){
+  install.packages("rnaturalearth")
+  library(rnaturalearth)
+}
+
+if (!require(sp)){
+  install.packages("sp")
+  library(sp)
+}
+
+if (!require(rgdal)){
+  install.packages("rgdal")
+  library(rgdal)
+}
+
+if (!require(raster)){
+  install.packages("raster")
+  library(raster)
+}
+
+```
+
+First we read in our variant call file (VCF) and match it to a metadata table that contains information about our samples.
+
+```{r}
+#read in vcf calculated using freebayes
+Bd.VCF <- read.vcfR("delia_freebayes_mexico.vcf")
+#read in file with sample metadata
+Bd.meta <- read_csv(file = "delia_mexico_metadata.csv")
+
+#join in a metadata table based on sample ID
+colnames(Bd.VCF@gt)[-1] -> vcf.names
+as.data.frame(vcf.names) -> vcf.names
+colnames(vcf.names) <- "Sample_ID"
+left_join(vcf.names, Bd.meta, by = "Sample_ID") -> vcf.meta
+#check to make sure all samples in the vcf are now in the metadata table
+all(colnames(Bd.VCF@gt)[-1] == vcf.meta$Sample)
+```
+
+Now we are going to turn the VCF into a genlight object for downstream calculations.
+
+```{r}
+gl.Bd <- vcfR2genlight(Bd.VCF)
+ploidy(gl.Bd) <- 2
+#get summary of data
+gl.Bd
+#looks like we have 91 samples and 744 loci
+```
+
+
+**Using DAPC to assign our genetic samples to different clusters**
+
+Now we are going to use a discriminant analysis of principal components (DAPC) to identify clusters within our genetic data using the package adegenet.
+
+```{r}
+
+#this finds the optimal number of clusters for us
+set.seed(1989)
+grp <- find.clusters(gl.Bd, max.n.clust=10, n.pca = 100, choose.n.clust = F, criterion = "diffNgroup")
+
+#now we can look at the BIC plot to see how we choose our K=5
+#we are looking for the "elbow" in the chart - were the decrease in BIC levels off
+plot(grp$Kstat, type="b", col="blue", ylab="BIC")
+
+
+```
+
+Let's run the DAPC with lots of PCs and see what we get.
+
+```{r}
+#run with 50 PCs 
+dapc1 <- dapc(gl.Bd, grp$grp, n.pca=50, n.da=2)
+
+summary(dapc1)
+
+scatter(dapc1)
+
+```
+
+Wow looks like we have four close groups and one that is very different! BUT this may be due to overfitting because we are using so many PCs for the calculation. So lets find out how many PCs we should use with the optim.a.score function.
+
+```{r}
+
+#then use this to find the optimal number of PCs to use
+temp <- optim.a.score(dapc1)
+
+
+```
+
+Kk let's use 6 PCs
+
+```{r}
+#run the DAPC again now we will just use 2 PCs
+dapc1 <- dapc(gl.Bd, grp$grp, n.pca=6, n.da=2)
+#to explore split
+scatter(dapc1)
+
+```
+
+Now we get a more reasonable spread that isn't overfit. However, we can see that group 2 is very different than the other groups, so we may need to revisit K=4. 
+
+```{r}
+
+#to see assignment probabilities for each cluster
+assignplot(dapc1)
+
+#add this assignment to the vcf.meta table
+assign <- as_tibble(as.numeric(dapc1$assign))
+vcf.meta <- cbind(vcf.meta, assign=assign$value)
+
+
+```
+
+We can see that samples with yellow boxes have lower probability of being assigned to either group and that many within groups 1,3, 4, and 5 have high uncertainty. So let's go back and redo the DAPC with K=2.
+
+```{r}
+
+set.seed(42)
+grp2 <- find.clusters(gl.Bd, n.clust=2, n.pca = 100, choose.n.clust = F, criterion = "diffNgroup")
+#run the dapc with K=2 and many PCs
+dapc2 <- dapc(gl.Bd, grp2$grp, n.pca=50, n.da=2)
+scatter(dapc2)
+
+
+```
+
+We can see that this seems to be overfit, so let's find the optimal number of PCs to use again.
+
+```{r}
+
+#find the optimal number of PCs to use
+temp <- optim.a.score(dapc2)
+
+
+```
+
+We see that the optimal number is 1 so let's use two and plot again.
+
+```{r}
+
+#we get one but let's use at least 2
+dapc2 <- dapc(gl.Bd, grp2$grp, n.pca=2, n.da=2)
+scatter(dapc2)
+
+#now make a dataframe with the assignments
+assign2 <- as_tibble(as.numeric(dapc2$assign))
+
+#now let's add this assignment information to our meta file so we can use it in our PCA
+vcf.meta <- cbind(vcf.meta, assign2=assign2$value)
+
+```
+
+Now we use these assignments and make a PCA to explore the relationship of the samples.
+
+```{r}
+#calculate PCA
+pca <- glPca(gl.Bd, nf = 3)
+#plot how much variance is explained by the subsequent PCs
+barplot(100*pca$eig/sum(pca$eig), col = heat.colors(50), main="PCA Eigenvalues")
+title(ylab="Percent of variance\nexplained", line = 2)
+title(xlab="Eigenvalues", line = 1)
+
+#PC1 explains 12.1% and PC2 explains 9.3%
+```
+
+Now let's see what the PCA looks like.
+
+```{r}
+pca.scores <- as.data.frame(pca$scores)
+cols <- brewer.pal(n_distinct(vcf.meta$assign), "Set1")
+
+#make the plot using ggplot and store in variable p 
+#this plot uses the K=4 results
+p <- ggplot(pca.scores, aes(x=PC2, y=PC1, colour=as.factor(vcf.meta$assign), shape=vcf.meta$Family)) + 
+  geom_point(size=5) + 
+  scale_color_manual(name = "Cluster", values = c("dark grey",cols[1],cols[2],cols[3],cols[4])) + 
+  scale_shape_manual(name = "Family", values = c(0,2,4,6,8,10,12)) +
+  stat_ellipse(aes(x=PC2, y=PC1, group=as.factor(vcf.meta$assign)),level = 0.95, size = 1) + 
+  geom_hline(yintercept = 0) + 
+  geom_vline(xintercept = 0) + 
+  theme_bw()
+
+#now plot
+p
+```
+
+Ok now let's compare to the PCA with K=2 colors
+
+```{r}
+
+p2 <- ggplot(pca.scores, aes(x=PC2, y=PC1, colour=as.factor(vcf.meta$assign2), shape=vcf.meta$Family)) + 
+  geom_point(size=5) + 
+  scale_color_manual(name = "Cluster",values = c(cols[1],cols[2])) + 
+  scale_shape_manual(name = "Family",values = c(0,2,4,6,8,10,12)) +
+  stat_ellipse(aes(x=PC2, y=PC1, group=as.factor(vcf.meta$assign2)),level = 0.95, size = 1) + 
+  geom_hline(yintercept = 0) + 
+  geom_vline(xintercept = 0) + 
+  theme_bw()
+
+#now plot
+p2
+```
+
+Now we can compare the results we just calculated with those published in the  [Molecular Ecology Paper](https://onlinelibrary.wiley.com/doi/pdf/10.1111/mec.15733).
+
+Looking at the paper we know that the main split we have in our sample is GPL1 vs GPL2. So let's use the GPL lineage information (included in the metadata file to compare our results)
+
+We can see that four samples in Cluster 1 are GPL2! 
+
+
+**Run AMOVA to test variation of genetic data based on site or species**
+
+AMOVA can use categorical "strata" and test whether these strata correlate with the variation in your data.
+
+Sourced from this [tutorial](https://grunwaldlab.github.io/poppr/reference/poppr.amova.html)
+
+```{r}
+#convert to genind for analysis
+mx_genind <- vcfR2genind(Bd.VCF)
+
+#set strata as site and species
+mx_strata <- data.frame(cbind(vcf.meta$State,vcf.meta$Family, 
+paste(vcf.meta$State,vcf.meta$Family, sep="_")))
+colnames(mx_strata) <- c("State","Family","State_Family")
+strata(mx_genind) <- mx_strata
+mx_genclone <- as.genclone(mx_genind)
+
+#check out sample numbers for eacch of our strata
+table(strata(mx_genclone, ~State/Family, combine = FALSE))
+
+
+
+```
+
+Now let's run the AMOVA.
+
+```{r}
+
+#run amova
+mx_amova <- poppr.amova(mx_genclone, ~State/Family)
+
+#check it out
+mx_amova
+
+```
+
+Now we can run a significance test to get a p-value for our comparisons.
+
+```{r}
+#run significance test
+set.seed(1989)
+mx_signif   <- randtest(mx_amova, nrepet = 999)
+plot(mx_signif)
+
+mx_signif
+
+```
+
+
+From this we can see that a low proportion of variance (17.6%) is explained by variations between samples (i.e. Family) within a State and the p-value is significant, however most of the variation is within samples (or unstructured).
+
+**Calculate heterozygosity among different assigned genotypes**
+
+First, I use the program vcftools to run the following command on my input vcf:
+
+> ./vcftools --vcf delia_freebayes_mexico.vcf --het --out mx_Bd
+
+This gave me the output called "mx_Bd.het" which I will read in here.
+
+```{r}
+#read in
+het_all <- read_delim("mx_Bd.het", delim = "\t",
+           col_names = c("Sample_ID","ho", "he", "nsites", "f"), skip = 1)
+
+#join to other metadata
+left_join(het_all, vcf.meta, by = "Sample_ID") -> vcf.meta.het
+vcf.meta.het <- mutate(vcf.meta.het, ho_calc=1-(ho/nsites))
+
+#plot by genotype
+pb <- ggplot(vcf.meta.het, aes(x=as.factor(GPL_lineage), y=ho_calc, color=as.factor(GPL_lineage))) + 
+  geom_boxplot()+
+  xlab("Genotype")+
+  ylab("Individual Heterozygosity")+
+  scale_color_manual(values = c(cols[2],cols[1],"dark grey")) +
+  geom_signif(comparisons = list(c("1","2")), map_signif_level=T)+
+  theme_bw()
+
+pb + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.5)
+
+#here ** means the p-value is significant at the 0.01 level. 
+#GPL1 has significantly higher heterozygosity than GPL2
+
+```
+
+**Calculate pairwise genetic distance and plot vs geographic distance**
+
+
+```{r}
+#calculate pairwise genetic distance
+mx.dist <- poppr::bitwise.dist(mx_genclone, mat=T)
+
+#calcualte geo dist
+mx_pts <- cbind(vcf.meta$Sample_ID,vcf.meta$Lat,vcf.meta$Lon)
+colnames(mx_pts) <- c("name","lat","lon")
+write.csv(mx_pts, file="mx_geo_pts.csv")
+samples_loc_mx <- read.csv("mx_geo_pts.csv", header = T)
+#functions for calculating geo dist
+ReplaceLowerOrUpperTriangle <- function(m, triangle.to.replace){
+   # If triangle.to.replace="lower", replaces the lower triangle of a square matrix with its upper triangle.
+   # If triangle.to.replace="upper", replaces the upper triangle of a square matrix with its lower triangle.
+   if (nrow(m) != ncol(m)) stop("Supplied matrix must be square.")
+   if      (tolower(triangle.to.replace) == "lower") tri <- lower.tri(m)
+   else if (tolower(triangle.to.replace) == "upper") tri <- upper.tri(m)
+   else stop("triangle.to.replace must be set to 'lower' or 'upper'.")
+   m[tri] <- t(m)[tri]
+   return(m)
+}
+GeoDistanceInMetresMatrix <- function(df.geopoints){
+   # Returns a matrix (M) of distances between geographic points.
+   # M[i,j] = M[j,i] = Distance between (df.geopoints$lat[i], df.geopoints$lon[i]) and
+   # (df.geopoints$lat[j], df.geopoints$lon[j]).
+   # The row and column names are given by df.geopoints$name.
+   GeoDistanceInMetres <- function(g1, g2){
+      # Returns a vector of distances. (But if g1$index > g2$index, returns zero.)
+      # The 1st value in the returned vector is the distance between g1[[1]] and g2[[1]].
+      # The 2nd value in the returned vector is the distance between g1[[2]] and g2[[2]]. Etc.
+      # Each g1[[x]] or g2[[x]] must be a list with named elements "index", "lat" and "lon".
+      # E.g. g1 <- list(list("index"=1, "lat"=12.1, "lon"=10.1), list("index"=3, "lat"=12.1, "lon"=13.2))
+      DistM <- function(g1, g2){
+         require("Imap")
+         return(ifelse(g1$index > g2$index, 0, gdist(lat.1=g1$lat, lon.1=g1$lon, lat.2=g2$lat, lon.2=g2$lon, units="m")))
+      }
+      return(mapply(DistM, g1, g2))
+   }
+   n.geopoints <- nrow(df.geopoints)
+   # The index column is used to ensure we only do calculations for the upper triangle of points
+   df.geopoints$index <- 1:n.geopoints
+   # Create a list of lists
+   list.geopoints <- by(df.geopoints[,c("index", "lat", "lon")], 1:n.geopoints, function(x){return(list(x))})
+   # Get a matrix of distances (in metres)
+   mat.distances <- ReplaceLowerOrUpperTriangle(outer(list.geopoints, list.geopoints, GeoDistanceInMetres), "lower")
+   # Set the row and column names
+   rownames(mat.distances) <- df.geopoints$name
+   colnames(mat.distances) <- df.geopoints$name
+   return(mat.distances)
+}
+
+#calculate the distance matrix
+
+distance.mat.m.mx <- GeoDistanceInMetresMatrix(samples_loc_mx)
+
+#check the dimensions (these should match)
+dim(mx.dist)
+dim(distance.mat.m.mx)
+
+geo_dist_mx <- distance.mat.m.mx[lower.tri(distance.mat.m.mx)]
+gen_dist_mx <- mx.dist[lower.tri(mx.dist)]
+
+#for plotting a linear model on the data
+gen_dist_dist_mx <- as.dist(mx.dist)
+geo_km_dist_dist_mx <- as.dist(distance.mat.m.mx)
+mx_lm <- lm(gen_dist_dist_mx ~ geo_km_dist_dist_mx)
+#intercept
+intercept <- mx_lm$coefficients[1]
+#slope for km
+slope <- mx_lm$coefficients[2]*1000
+
+#now we can plot
+plot(geo_dist_mx/1000, gen_dist_mx, xlab="Geographic Distance (km)", ylab="Genetic Distance")
+abline(intercept, slope, col = "red", lty = 3, lwd=2)
+
+```
+
+Finally we can run a mantel test to see if geo and genetic distances are correlated in this system.
+
+```{r}
+#mantel test
+mantel(distance.mat.m.mx, mx.dist)
+
+```
+
+Now we can see that there is a correaltion betwen Bd genetic distance and geographic distance (r = 0.2909) and it is significant. 
+
+**Plotting genotypes/clusters on a map**
+
+
+```{r}
+
+#plot base map range and scale
+maps::map(database=ne_countries(country = "mexico", type = "countries"))
+maps::map.scale(relwidth = 0.1, metric = TRUE, ratio = F, cex=0.5,y=max(vcf.meta$Lat)+.4, x=-104)
+#add the points to the map and color based on DAPC assignment.
+points(x = vcf.meta$Lon, y = vcf.meta$Lat, col = cols[as.factor(vcf.meta$assign2)], pch=16, cex=1.5)
+#to replot GPL2 samples on top of GPL1
+#find the index for the four GPL2 samples
+GPL2_index <- which(vcf.meta$GPL_lineage=="2")
+points(y = vcf.meta[GPL2_index,"Lat"], x = vcf.meta[GPL2_index,"Lon"], col = cols[1], pch=16, cex=1.5)
+
+#looks great! 
+
+```
+
+**END TUTORIAL**
+
+
+
